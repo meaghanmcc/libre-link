@@ -1,0 +1,31 @@
+name: Run LibreLinkUp Uploader
+
+on:
+  schedule:
+    - cron: '*/5 * * * *' # Runs automatically every 5 minutes
+  workflow_dispatch: # Allows you to manually trigger it anytime
+
+jobs:
+  run-uploader:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Uploader Script
+        run: npm start
+        env:
+          LINK_UP_USERNAME: ${{ secrets.LINKUP_USERNAME }}
+          LINK_UP_PASSWORD: ${{ secrets.LINKUP_PASSWORD }}
+          LINK_UP_REGION: ${{ secrets.LINKUP_REGION }}
+          NIGHTSCOUT_URL: ${{ secrets.NIGHTSCOUT_URL }}
+          NIGHTSCOUT_API_SECRET: ${{ secrets.NIGHTSCOUT_API_SECRET }}
